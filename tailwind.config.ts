@@ -57,11 +57,28 @@ export default {
           border: "hsl(var(--sidebar-border))",
           ring: "hsl(var(--sidebar-ring))",
         },
+        "fresh-green": "hsl(var(--fresh-green))",
+        "fresh-green-light": "hsl(var(--fresh-green-light))",
+        "orange-fruit": "hsl(var(--orange-fruit))",
+        "orange-fruit-light": "hsl(var(--orange-fruit-light))",
+        "completed": "hsl(var(--completed))",
       },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+      },
+      backgroundImage: {
+        "gradient-fresh": "var(--gradient-fresh)",
+        "gradient-card": "var(--gradient-card)",
+        "gradient-completed": "var(--gradient-completed)",
+      },
+      boxShadow: {
+        "card": "var(--shadow-card)",
+        "floating": "var(--shadow-floating)",
+      },
+      transitionTimingFunction: {
+        "smooth": "var(--transition-smooth)",
       },
       keyframes: {
         "accordion-down": {

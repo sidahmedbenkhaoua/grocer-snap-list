@@ -8,33 +8,52 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --background: 120 20% 98%;
+    --foreground: 140 10% 15%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 140 10% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover-foreground: 140 10% 15%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 142 76% 36%;
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 120 15% 94%;
+    --secondary-foreground: 140 10% 15%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 120 15% 96%;
+    --muted-foreground: 140 5% 60%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 35 95% 65%;
+    --accent-foreground: 140 10% 15%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 120 15% 88%;
+    --input: 120 15% 92%;
+    --ring: 142 76% 36%;
+
+    /* Custom tokens pour les courses */
+    --fresh-green: 142 76% 36%;
+    --fresh-green-light: 142 60% 85%;
+    --orange-fruit: 35 95% 65%;
+    --orange-fruit-light: 35 80% 90%;
+    --completed: 120 30% 75%;
+    
+    /* Gradients */
+    --gradient-fresh: linear-gradient(135deg, hsl(142 76% 36%), hsl(35 95% 65%));
+    --gradient-card: linear-gradient(135deg, hsl(0 0% 100%), hsl(120 20% 98%));
+    --gradient-completed: linear-gradient(135deg, hsl(120 30% 75%), hsl(120 20% 85%));
+    
+    /* Shadows */
+    --shadow-card: 0 4px 20px -4px hsl(142 76% 36% / 0.1);
+    --shadow-floating: 0 8px 32px -8px hsl(142 76% 36% / 0.2);
+    
+    /* Animations */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 
     --radius: 0.5rem;
 
