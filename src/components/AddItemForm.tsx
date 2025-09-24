@@ -128,9 +128,9 @@ export const AddItemForm = ({ onAdd }: AddItemFormProps) => {
         </Select>
 
         <div>
-          <label className="flex items-center gap-2 cursor-pointer">
+          <label className="flex items-center gap-2 cursor-pointer text-sm text-muted-foreground mb-2">
             <Upload className="h-4 w-4" />
-            <span className="text-sm">Ajouter une photo</span>
+            <span>Ajouter une photo personnalisée (optionnel)</span>
             <input
               type="file"
               accept="image/*"
@@ -138,9 +138,21 @@ export const AddItemForm = ({ onAdd }: AddItemFormProps) => {
               className="hidden"
             />
           </label>
+          <p className="text-xs text-muted-foreground mb-2">
+            Une photo par défaut sera utilisée selon la catégorie. Ajoutez une photo personnalisée uniquement si vous voulez montrer un produit spécifique.
+          </p>
           {image && (
             <div className="mt-2">
               <img src={image} alt="Aperçu" className="w-16 h-16 object-cover rounded" />
+              <Button 
+                type="button" 
+                variant="ghost" 
+                size="sm" 
+                onClick={() => setImage(undefined)}
+                className="mt-1 text-xs"
+              >
+                Supprimer la photo
+              </Button>
             </div>
           )}
         </div>

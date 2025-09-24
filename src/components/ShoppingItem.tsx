@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { Trash2, Edit2, Plus, Minus } from "lucide-react";
+import { getDefaultImage } from "@/utils/defaultImages";
 
 export interface ShoppingItemType {
   id: string;
@@ -59,6 +60,9 @@ export const ShoppingItem = ({ item, onUpdate, onDelete }: ShoppingItemProps) =>
     setIsEditing(!isEditing);
   };
 
+  // Utilise l'image personnalisée ou l'image par défaut de la catégorie
+  const displayImage = item.image || getDefaultImage(item.category);
+
   return (
     <Card className={`p-4 transition-all duration-300 ${
       item.completed 
@@ -72,10 +76,10 @@ export const ShoppingItem = ({ item, onUpdate, onDelete }: ShoppingItemProps) =>
           className="data-[state=checked]:bg-fresh-green data-[state=checked]:border-fresh-green"
         />
         
-        {item.image && (
-          <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0">
+        {displayImage && (
+          <div className="w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 bg-secondary">
             <img 
-              src={item.image} 
+              src={displayImage} 
               alt={item.name}
               className="w-full h-full object-cover"
             />
