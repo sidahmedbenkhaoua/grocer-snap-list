@@ -99,25 +99,16 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Hero Section */}
-      <div className="relative h-48 mb-6 overflow-hidden">
-        <img 
-          src={heroImage} 
-          alt="Liste de courses" 
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-        <div className="absolute bottom-4 left-4 right-4">
-          <h1 className="text-2xl font-bold text-white mb-2">
+      <div className="container max-w-md mx-auto px-4 py-6 space-y-6">
+        {/* Simple Header */}
+        <div className="text-center space-y-2">
+          <h1 className="text-2xl font-bold text-foreground">
             📝 Ma Liste de Courses
           </h1>
-          <p className="text-white/90 text-sm">
+          <p className="text-muted-foreground text-sm">
             Organisez vos achats facilement
           </p>
         </div>
-      </div>
-
-      <div className="container max-w-md mx-auto px-4 pb-6 space-y-6">
         {/* Stats */}
         <ShoppingStats items={items} />
 

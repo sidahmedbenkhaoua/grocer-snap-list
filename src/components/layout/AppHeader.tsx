@@ -46,47 +46,48 @@ export function AppHeader() {
         
         <div className="flex-1" />
         
-        {/* Notifications */}
-        <Popover>
-          <PopoverTrigger asChild>
-            <Button variant="ghost" size="icon" className="relative">
-              <Bell className="h-4 w-4" />
-              {unreadCount > 0 && (
-                <Badge 
-                  className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 text-xs bg-orange-fruit text-white"
-                >
-                  {unreadCount}
-                </Badge>
-              )}
-            </Button>
-          </PopoverTrigger>
-          <PopoverContent className="w-80" align="end">
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <h4 className="text-sm font-semibold">Notifications</h4>
-                <Badge variant="secondary">{unreadCount} nouvelles</Badge>
-              </div>
-              <div className="space-y-2">
-                {mockNotifications.map((notification) => (
-                  <div
-                    key={notification.id}
-                    className={`p-2 rounded-lg border ${
-                      notification.unread ? 'bg-fresh-green-light/20 border-fresh-green/20' : 'bg-muted/50'
-                    }`}
+        <div className="flex items-center gap-2">
+          {/* Notifications */}
+          <Popover>
+            <PopoverTrigger asChild>
+              <Button variant="ghost" size="icon" className="relative">
+                <Bell className="h-4 w-4" />
+                {unreadCount > 0 && (
+                  <Badge 
+                    className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 text-xs bg-orange-fruit text-white"
                   >
-                    <p className="text-sm">{notification.message}</p>
-                    <p className="text-xs text-muted-foreground">{notification.time}</p>
-                  </div>
-                ))}
+                    {unreadCount}
+                  </Badge>
+                )}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-80" align="end">
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h4 className="text-sm font-semibold">Notifications</h4>
+                  <Badge variant="secondary">{unreadCount} nouvelles</Badge>
+                </div>
+                <div className="space-y-2">
+                  {mockNotifications.map((notification) => (
+                    <div
+                      key={notification.id}
+                      className={`p-2 rounded-lg border ${
+                        notification.unread ? 'bg-fresh-green-light/20 border-fresh-green/20' : 'bg-muted/50'
+                      }`}
+                    >
+                      <p className="text-sm">{notification.message}</p>
+                      <p className="text-xs text-muted-foreground">{notification.time}</p>
+                    </div>
+                  ))}
+                </div>
               </div>
-            </div>
-          </PopoverContent>
-        </Popover>
+            </PopoverContent>
+          </Popover>
 
-        {/* User Menu */}
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="relative h-8 w-8 rounded-full ml-2">
+          {/* User Menu */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="relative h-8 w-8 rounded-full">
               <Avatar className="h-8 w-8">
                 <AvatarImage src={mockUser.avatar} alt={mockUser.name} />
                 <AvatarFallback>{mockUser.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
@@ -115,8 +116,9 @@ export function AppHeader() {
             <DropdownMenuItem onClick={handleLogout} className="text-destructive">
               <span>Se déconnecter</span>
             </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
     </header>
   );
