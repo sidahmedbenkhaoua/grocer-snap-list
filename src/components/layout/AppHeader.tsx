@@ -1,4 +1,4 @@
-import { Bell, User } from "lucide-react";
+import { Bell, User, Sun, Moon } from "lucide-react";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -16,6 +16,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { useTheme } from "next-themes";
 
 // Mock user data
 const mockUser = {
@@ -32,6 +33,7 @@ const mockNotifications = [
 ];
 
 export function AppHeader() {
+  const { theme, setTheme } = useTheme();
   const unreadCount = mockNotifications.filter(n => n.unread).length;
 
   const handleLogout = () => {
@@ -47,6 +49,16 @@ export function AppHeader() {
         <div className="flex-1" />
         
         <div className="flex items-center gap-2">
+          {/* Theme Toggle */}
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+          >
+            <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+            <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+          </Button>
+
           {/* Notifications */}
           <Popover>
             <PopoverTrigger asChild>
@@ -54,7 +66,7 @@ export function AppHeader() {
                 <Bell className="h-4 w-4" />
                 {unreadCount > 0 && (
                   <Badge 
-                    className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 text-xs bg-orange-fruit text-white"
+                    className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 text-xs bg-orange-fruit text-white flex items-center justify-center"
                   >
                     {unreadCount}
                   </Badge>
