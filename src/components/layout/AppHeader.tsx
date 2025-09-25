@@ -1,4 +1,4 @@
-import { Bell, User, Sun, Moon, Search, Settings } from "lucide-react";
+import { Bell, User, Sun, Moon, Search, Settings, Menu } from "lucide-react";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -41,11 +41,20 @@ export function AppHeader() {
   };
 
   return (
-    <header className="sticky top-0 z-50 w-full bg-card/80 backdrop-blur-xl border-b border-border/40 shadow-sm">
+    <header className="sticky top-0 z-50 w-full bg-background/95 dark:bg-background/95 backdrop-blur-xl border-b border-border shadow-sm">
       <div className="flex h-16 items-center justify-between px-6">
         {/* Left Section */}
         <div className="flex items-center gap-4">
-          <SidebarTrigger className="hover:bg-accent/50 transition-colors" />
+          <Button
+            variant="ghost"
+            size="icon"
+            className="w-9 h-9 rounded-xl hover:bg-accent transition-all duration-200 lg:hidden xl:flex"
+            asChild
+          >
+            <SidebarTrigger>
+              <Menu className="h-4 w-4" />
+            </SidebarTrigger>
+          </Button>
           <div className="hidden md:flex items-center gap-2">
             <div className="w-2 h-2 rounded-full bg-gradient-to-r from-fresh-green to-orange-fruit"></div>
             <span className="font-semibold text-foreground">ShoppingApp</span>
@@ -59,7 +68,7 @@ export function AppHeader() {
             variant="ghost"
             size="icon"
             onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-            className="w-9 h-9 rounded-xl hover:bg-accent/50 transition-all duration-200"
+            className="w-9 h-9 rounded-xl hover:bg-accent transition-all duration-200"
           >
             <Sun className="h-4 w-4 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
             <Moon className="absolute h-4 w-4 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
@@ -71,7 +80,7 @@ export function AppHeader() {
               <Button 
                 variant="ghost" 
                 size="icon" 
-                className="relative w-9 h-9 rounded-xl hover:bg-accent/50 transition-all duration-200"
+                className="relative w-9 h-9 rounded-xl hover:bg-accent transition-all duration-200"
               >
                 <Bell className="h-4 w-4" />
                 {unreadCount > 0 && (
@@ -81,10 +90,10 @@ export function AppHeader() {
                 )}
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-80 p-0 rounded-2xl border-border/50 shadow-xl" align="end">
+            <PopoverContent className="w-80 p-0 rounded-2xl border shadow-xl bg-popover" align="end">
               <div className="p-6">
                 <div className="flex items-center justify-between mb-4">
-                  <h4 className="text-lg font-semibold">Notifications</h4>
+                  <h4 className="text-lg font-semibold text-popover-foreground">Notifications</h4>
                   {unreadCount > 0 && (
                     <Badge className="bg-gradient-to-r from-orange-fruit to-red-500 text-white border-0">
                       {unreadCount} nouvelles
@@ -95,13 +104,13 @@ export function AppHeader() {
                   {mockNotifications.map((notification) => (
                     <div
                       key={notification.id}
-                      className={`p-4 rounded-xl transition-all duration-200 hover:bg-accent/30 ${
+                      className={`p-4 rounded-xl transition-all duration-200 hover:bg-accent/50 ${
                         notification.unread 
                           ? 'bg-gradient-to-r from-fresh-green/10 to-orange-fruit/10 border border-fresh-green/20' 
-                          : 'bg-muted/30'
+                          : 'bg-muted/50'
                       }`}
                     >
-                      <p className="text-sm font-medium">{notification.message}</p>
+                      <p className="text-sm font-medium text-popover-foreground">{notification.message}</p>
                       <p className="text-xs text-muted-foreground mt-1">{notification.time}</p>
                     </div>
                   ))}
@@ -113,8 +122,8 @@ export function AppHeader() {
           {/* User Menu */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="relative p-1 rounded-xl hover:bg-accent/50 transition-all duration-200">
-                <Avatar className="h-8 w-8 ring-2 ring-border/20 hover:ring-primary/30 transition-all duration-200">
+              <Button variant="ghost" className="relative p-1 rounded-xl hover:bg-accent transition-all duration-200">
+                <Avatar className="h-8 w-8 ring-2 ring-border hover:ring-primary/50 transition-all duration-200">
                   <AvatarImage src={mockUser.avatar} alt={mockUser.name} />
                   <AvatarFallback className="bg-gradient-to-br from-fresh-green to-orange-fruit text-white font-semibold">
                     {mockUser.name.split(' ').map(n => n[0]).join('')}
@@ -122,17 +131,17 @@ export function AppHeader() {
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-64 p-2 rounded-2xl border-border/50 shadow-xl" align="end" forceMount>
+            <DropdownMenuContent className="w-64 p-2 rounded-2xl border shadow-xl bg-popover" align="end" forceMount>
               <DropdownMenuLabel className="p-4 font-normal">
                 <div className="flex items-center gap-3">
-                  <Avatar className="h-12 w-12 ring-2 ring-border/20">
+                  <Avatar className="h-12 w-12 ring-2 ring-border">
                     <AvatarImage src={mockUser.avatar} alt={mockUser.name} />
                     <AvatarFallback className="bg-gradient-to-br from-fresh-green to-orange-fruit text-white font-semibold">
                       {mockUser.name.split(' ').map(n => n[0]).join('')}
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex flex-col">
-                    <p className="text-sm font-semibold leading-none">{mockUser.name}</p>
+                    <p className="text-sm font-semibold leading-none text-popover-foreground">{mockUser.name}</p>
                     <p className="text-xs text-muted-foreground mt-1">
                       {mockUser.email}
                     </p>
