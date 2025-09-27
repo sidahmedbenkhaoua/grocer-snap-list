@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Trash2, Edit2, Plus, Minus, Camera } from "lucide-react";
 import { getDefaultImage } from "@/utils/defaultImages";
 import { PurchasePhotos } from "./PurchasePhotos";
@@ -51,7 +52,13 @@ export const ShoppingItem = ({ item, onUpdate, onDelete }: ShoppingItemProps) =>
   const [showPhotos, setShowPhotos] = useState(false);
 
   const handleToggleComplete = () => {
-    onUpdate({ ...item, completed: !item.completed });
+    const newCompleted = !item.completed;
+    onUpdate({ 
+      ...item, 
+      completed: newCompleted,
+      purchasedBy: newCompleted ? "Vous" : undefined,
+      purchasedAt: newCompleted ? new Date().toISOString() : undefined
+    });
   };
 
   const handleQuantityChange = (delta: number) => {
@@ -113,11 +120,25 @@ export const ShoppingItem = ({ item, onUpdate, onDelete }: ShoppingItemProps) =>
                 autoFocus
               />
             ) : (
-              <h3 className={`font-medium truncate ${
-                item.completed ? 'line-through text-muted-foreground' : ''
-              }`}>
-                {item.name}
-              </h3>
+              <div className="flex items-center gap-2 flex-1">
+                <h3 className={`font-medium truncate ${
+                  item.completed ? 'line-through text-muted-foreground' : ''
+                }`}>
+                  {item.name}
+                </h3>
+                {item.completed && item.purchasedBy && (
+                  <div className="flex items-center gap-1 bg-fresh-green/10 px-2 py-1 rounded-full">
+                    <Avatar className="h-5 w-5">
+                      <AvatarFallback className="text-[10px] bg-fresh-green text-white">
+                        {item.purchasedBy.split(' ').map(n => n[0]).join('').toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                    <span className="text-xs text-fresh-green font-medium">
+                      {item.purchasedBy}
+                    </span>
+                  </div>
+                )}
+              </div>
             )}
             <Badge className={getCategoryColor(item.category)} variant="secondary">
               {item.category}
