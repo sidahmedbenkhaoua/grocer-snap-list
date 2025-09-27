@@ -2,19 +2,23 @@ import { useState, useEffect } from "react";
 import { ShoppingItem, type ShoppingItemType } from "@/components/ShoppingItem";
 import { AddItemForm } from "@/components/AddItemForm";
 import { ShoppingStats } from "@/components/ShoppingStats";
+import { GroupManagement } from "@/components/GroupManagement";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Trash2, Filter } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
-import heroImage from "@/assets/shopping-hero.jpg";
+import type { Group } from "@/types/group";
 
 const Index = () => {
   const [items, setItems] = useState<ShoppingItemType[]>([]);
   const [filterCategory, setFilterCategory] = useState<string>("");
+  const [currentGroup, setCurrentGroup] = useState<Group | null>(null);
 
-  // Load items from localStorage on mount
+  // Load items and group from localStorage on mount
   useEffect(() => {
     const savedItems = localStorage.getItem('shoppingItems');
+    const savedGroup = localStorage.getItem('currentGroup');
+    
     if (savedItems) {
       setItems(JSON.parse(savedItems));
     } else {
@@ -46,6 +50,10 @@ const Index = () => {
         }
       ];
       setItems(demoItems);
+    }
+
+    if (savedGroup) {
+      setCurrentGroup(JSON.parse(savedGroup));
     }
   }, []);
 
@@ -103,12 +111,18 @@ const Index = () => {
         {/* Simple Header */}
         <div className="text-center space-y-2">
           <h1 className="text-2xl font-bold text-foreground">
-            📝 Ma Liste de Courses
+            📝 {currentGroup ? `${currentGroup.name}` : 'Ma Liste de Courses'}
           </h1>
           <p className="text-muted-foreground text-sm">
-            Organisez vos achats facilement
+            {currentGroup ? 'Liste partagée avec votre groupe' : 'Organisez vos achats facilement'}
           </p>
         </div>
+
+        {/* Group Management */}
+        <GroupManagement
+          currentGroup={currentGroup}
+          onGroupChange={setCurrentGroup}
+        />
         {/* Stats */}
         <ShoppingStats items={items} />
 

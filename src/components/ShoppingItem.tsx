@@ -4,8 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
-import { Trash2, Edit2, Plus, Minus } from "lucide-react";
+import { Trash2, Edit2, Plus, Minus, Camera } from "lucide-react";
 import { getDefaultImage } from "@/utils/defaultImages";
+import { PurchasePhotos } from "./PurchasePhotos";
+import type { PurchasePhoto } from "@/types/group";
 
 export interface ShoppingItemType {
   id: string;
@@ -15,6 +17,9 @@ export interface ShoppingItemType {
   category: string;
   image?: string;
   completed: boolean;
+  purchasePhotos?: PurchasePhoto[];
+  purchasedBy?: string;
+  purchasedAt?: string;
 }
 
 interface ShoppingItemProps {
@@ -43,6 +48,7 @@ const getCategoryColor = (category: string) => {
 export const ShoppingItem = ({ item, onUpdate, onDelete }: ShoppingItemProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editName, setEditName] = useState(item.name);
+  const [showPhotos, setShowPhotos] = useState(false);
 
   const handleToggleComplete = () => {
     onUpdate({ ...item, completed: !item.completed });
@@ -58,6 +64,15 @@ export const ShoppingItem = ({ item, onUpdate, onDelete }: ShoppingItemProps) =>
       onUpdate({ ...item, name: editName });
     }
     setIsEditing(!isEditing);
+  };
+
+  const handlePhotosUpdate = (photos: PurchasePhoto[]) => {
+    onUpdate({ 
+      ...item, 
+      purchasePhotos: photos,
+      purchasedBy: photos.length > 0 ? "Vous" : undefined,
+      purchasedAt: photos.length > 0 ? new Date().toISOString() : undefined
+    });
   };
 
   // Utilise l'image personnalisée ou l'image par défaut de la catégorie
@@ -138,6 +153,20 @@ export const ShoppingItem = ({ item, onUpdate, onDelete }: ShoppingItemProps) =>
                 variant="ghost"
                 size="icon"
                 className="h-8 w-8"
+                onClick={() => setShowPhotos(!showPhotos)}
+                title="Photos d'achat"
+              >
+                <Camera className="h-3 w-3" />
+                {item.purchasePhotos && item.purchasePhotos.length > 0 && (
+                  <Badge className="absolute -top-1 -right-1 h-4 w-4 p-0 text-xs bg-primary">
+                    {item.purchasePhotos.length}
+                  </Badge>
+                )}
+              </Button>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8"
                 onClick={handleNameEdit}
               >
                 <Edit2 className="h-3 w-3" />
@@ -152,6 +181,16 @@ export const ShoppingItem = ({ item, onUpdate, onDelete }: ShoppingItemProps) =>
               </Button>
             </div>
           </div>
+          
+          {showPhotos && (
+            <div className="mt-3 pt-3 border-t border-border">
+              <PurchasePhotos
+                photos={item.purchasePhotos || []}
+                onPhotosUpdate={handlePhotosUpdate}
+                currentUser="Vous"
+              />
+            </div>
+          )}
         </div>
       </div>
     </Card>
