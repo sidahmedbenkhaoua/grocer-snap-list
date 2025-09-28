@@ -16,6 +16,12 @@ export interface Group {
   createdBy: string;
 }
 
+export interface Purchase {
+  id: string;
+  purchasedBy: string;
+  purchasedAt: string;
+}
+
 export interface PurchasePhoto {
   id: string;
   url: string;

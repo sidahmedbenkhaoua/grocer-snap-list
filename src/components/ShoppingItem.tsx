@@ -10,6 +10,12 @@ import { getDefaultImage } from "@/utils/defaultImages";
 import { PurchasePhotos } from "./PurchasePhotos";
 import type { PurchasePhoto } from "@/types/group";
 
+export interface Purchase {
+  id: string;
+  purchasedBy: string;
+  purchasedAt: string;
+}
+
 export interface ShoppingItemType {
   id: string;
   name: string;
@@ -19,6 +25,8 @@ export interface ShoppingItemType {
   image?: string;
   completed: boolean;
   purchasePhotos?: PurchasePhoto[];
+  purchases?: Purchase[];
+  // Deprecated - kept for backward compatibility
   purchasedBy?: string;
   purchasedAt?: string;
 }
@@ -53,12 +61,47 @@ export const ShoppingItem = ({ item, onUpdate, onDelete }: ShoppingItemProps) =>
 
   const handleToggleComplete = () => {
     const newCompleted = !item.completed;
-    onUpdate({ 
-      ...item, 
-      completed: newCompleted,
-      purchasedBy: newCompleted ? "Vous" : undefined,
-      purchasedAt: newCompleted ? new Date().toISOString() : undefined
-    });
+    const currentUser = "Vous";
+    
+    if (newCompleted) {
+      // Ajouter un nouvel achat
+      const newPurchase: Purchase = {
+        id: Date.now().toString(),
+        purchasedBy: currentUser,
+        purchasedAt: new Date().toISOString()
+      };
+      
+      const existingPurchases = item.purchases || [];
+      const updatedPurchases = [...existingPurchases, newPurchase];
+      
+      onUpdate({ 
+        ...item, 
+        completed: true,
+        purchases: updatedPurchases,
+        // Keep backward compatibility
+        purchasedBy: currentUser,
+        purchasedAt: newPurchase.purchasedAt
+      });
+    } else {
+      // Supprimer le dernier achat de l'utilisateur actuel
+      const existingPurchases = item.purchases || [];
+      const updatedPurchases = existingPurchases.filter(
+        (purchase, index, array) => {
+          // Garde tous sauf le dernier achat de l'utilisateur actuel
+          const lastUserPurchaseIndex = array.map(p => p.purchasedBy).lastIndexOf(currentUser);
+          return !(purchase.purchasedBy === currentUser && index === lastUserPurchaseIndex);
+        }
+      );
+      
+      onUpdate({ 
+        ...item, 
+        completed: updatedPurchases.length > 0,
+        purchases: updatedPurchases,
+        // Update backward compatibility fields
+        purchasedBy: updatedPurchases.length > 0 ? updatedPurchases[updatedPurchases.length - 1].purchasedBy : undefined,
+        purchasedAt: updatedPurchases.length > 0 ? updatedPurchases[updatedPurchases.length - 1].purchasedAt : undefined
+      });
+    }
   };
 
   const handleQuantityChange = (delta: number) => {
@@ -201,29 +244,54 @@ export const ShoppingItem = ({ item, onUpdate, onDelete }: ShoppingItemProps) =>
         </div>
       </div>
       
-      {item.completed && item.purchasedBy && (
+      {item.completed && (item.purchases?.length > 0 || item.purchasedBy) && (
         <div className="mt-3 pt-3 border-t border-border/50">
-          <div className="flex items-center gap-2">
-            <Avatar className="h-6 w-6">
-              <AvatarFallback className="text-xs bg-fresh-green text-white">
-                {item.purchasedBy.split(' ').map(n => n[0]).join('').toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
-            <span className="text-sm text-fresh-green font-medium">
-              Acheté par {item.purchasedBy}
-            </span>
-            {item.purchasedAt && (
-              <span className="text-xs text-muted-foreground ml-auto">
-                {new Date(item.purchasedAt).toLocaleDateString('fr-FR', {
-                  day: '2-digit',
-                  month: '2-digit',
-                  year: 'numeric',
-                  hour: '2-digit',
-                  minute: '2-digit'
-                })}
-              </span>
-            )}
-          </div>
+          {(() => {
+            // Support backward compatibility
+            const purchases = item.purchases || (item.purchasedBy ? [{
+              id: '1',
+              purchasedBy: item.purchasedBy,
+              purchasedAt: item.purchasedAt || new Date().toISOString()
+            }] : []);
+            
+            const purchaseCount = purchases.length;
+            const displayPurchases = purchases.slice(-3); // Show last 3 purchases
+            const remainingCount = purchaseCount - displayPurchases.length;
+            
+            return (
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm font-medium text-fresh-green">
+                    Acheté {purchaseCount} fois
+                  </span>
+                  <div className="flex items-center -space-x-2">
+                    {displayPurchases.map((purchase) => (
+                      <Avatar key={purchase.id} className="h-6 w-6 border-2 border-background">
+                        <AvatarFallback className="text-xs bg-fresh-green text-white">
+                          {purchase.purchasedBy.split(' ').map(n => n[0]).join('').toUpperCase()}
+                        </AvatarFallback>
+                      </Avatar>
+                    ))}
+                    {remainingCount > 0 && (
+                      <div className="h-6 w-6 rounded-full bg-muted border-2 border-background flex items-center justify-center">
+                        <span className="text-xs font-medium text-muted-foreground">
+                          +{remainingCount}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <span className="text-xs text-muted-foreground">
+                  {new Date(purchases[purchases.length - 1].purchasedAt).toLocaleDateString('fr-FR', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                  })}
+                </span>
+              </div>
+            );
+          })()}
         </div>
       )}
     </Card>
