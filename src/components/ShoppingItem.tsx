@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Trash2, Edit2, Plus, Minus, Camera } from "lucide-react";
+import { Trash2, Edit2, Plus, Minus, Camera, Apple, Carrot, Wheat, Beef, Milk, Coffee, Sparkles, ShoppingCart, MoreHorizontal } from "lucide-react";
 import { getDefaultImage } from "@/utils/defaultImages";
 import { PurchasePhotos } from "./PurchasePhotos";
 import type { PurchasePhoto } from "@/types/group";
@@ -49,8 +49,41 @@ const getCategoryColor = (category: string) => {
       return 'bg-red-500 text-white';
     case 'produits laitiers':
       return 'bg-blue-500 text-white';
+    case 'boissons':
+      return 'bg-cyan-500 text-white';
+    case 'entretien':
+      return 'bg-purple-500 text-white';
+    case 'epicerie':
+      return 'bg-orange-500 text-white';
+    case 'hygiène':
+      return 'bg-pink-500 text-white';
     default:
       return 'bg-secondary text-secondary-foreground';
+  }
+};
+
+const getCategoryIcon = (category: string) => {
+  switch (category.toLowerCase()) {
+    case 'légumes':
+      return Carrot;
+    case 'fruits':
+      return Apple;
+    case 'pain':
+      return Wheat;
+    case 'viande':
+      return Beef;
+    case 'produits laitiers':
+      return Milk;
+    case 'boissons':
+      return Coffee;
+    case 'entretien':
+      return Sparkles;
+    case 'epicerie':
+      return ShoppingCart;
+    case 'hygiène':
+      return Sparkles;
+    default:
+      return MoreHorizontal;
   }
 };
 
@@ -170,7 +203,15 @@ export const ShoppingItem = ({ item, onUpdate, onDelete }: ShoppingItemProps) =>
               </h3>
             )}
             <Badge className={getCategoryColor(item.category)} variant="secondary">
-              {item.category}
+              {(() => {
+                const CategoryIcon = getCategoryIcon(item.category);
+                return (
+                  <div className="flex items-center gap-1">
+                    <CategoryIcon size={12} />
+                    <span>{item.category}</span>
+                  </div>
+                );
+              })()}
             </Badge>
           </div>
           
