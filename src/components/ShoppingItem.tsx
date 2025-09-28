@@ -133,41 +133,26 @@ export const ShoppingItem = ({ item, onUpdate, onDelete }: ShoppingItemProps) =>
           
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              {item.completed && item.purchasedBy ? (
-                <div className="flex items-center gap-2 bg-fresh-green/10 px-2 py-1 rounded-full">
-                  <Avatar className="h-5 w-5">
-                    <AvatarFallback className="text-[10px] bg-fresh-green text-white">
-                      {item.purchasedBy.split(' ').map(n => n[0]).join('').toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
-                  <span className="text-xs text-fresh-green font-medium">
-                    Acheté par {item.purchasedBy}
-                  </span>
-                </div>
-              ) : (
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className="h-6 w-6"
-                    onClick={() => handleQuantityChange(-1)}
-                    disabled={item.quantity <= 1}
-                  >
-                    <Minus className="h-3 w-3" />
-                  </Button>
-                  <span className="text-sm font-medium min-w-[3rem] text-center">
-                    {item.quantity} {item.unit}
-                  </span>
-                  <Button
-                    variant="outline"
-                    size="icon"
-                    className="h-6 w-6"
-                    onClick={() => handleQuantityChange(1)}
-                  >
-                    <Plus className="h-3 w-3" />
-                  </Button>
-                </div>
-              )}
+              <Button
+                variant="outline"
+                size="icon"
+                className="h-6 w-6"
+                onClick={() => handleQuantityChange(-1)}
+                disabled={item.quantity <= 1}
+              >
+                <Minus className="h-3 w-3" />
+              </Button>
+              <span className="text-sm font-medium min-w-[3rem] text-center">
+                {item.quantity} {item.unit}
+              </span>
+              <Button
+                variant="outline"
+                size="icon"
+                className="h-6 w-6"
+                onClick={() => handleQuantityChange(1)}
+              >
+                <Plus className="h-3 w-3" />
+              </Button>
             </div>
             
             <div className="flex gap-1">
@@ -215,6 +200,32 @@ export const ShoppingItem = ({ item, onUpdate, onDelete }: ShoppingItemProps) =>
           )}
         </div>
       </div>
+      
+      {item.completed && item.purchasedBy && (
+        <div className="mt-3 pt-3 border-t border-border/50">
+          <div className="flex items-center gap-2">
+            <Avatar className="h-6 w-6">
+              <AvatarFallback className="text-xs bg-fresh-green text-white">
+                {item.purchasedBy.split(' ').map(n => n[0]).join('').toUpperCase()}
+              </AvatarFallback>
+            </Avatar>
+            <span className="text-sm text-fresh-green font-medium">
+              Acheté par {item.purchasedBy}
+            </span>
+            {item.purchasedAt && (
+              <span className="text-xs text-muted-foreground ml-auto">
+                {new Date(item.purchasedAt).toLocaleDateString('fr-FR', {
+                  day: '2-digit',
+                  month: '2-digit',
+                  year: 'numeric',
+                  hour: '2-digit',
+                  minute: '2-digit'
+                })}
+              </span>
+            )}
+          </div>
+        </div>
+      )}
     </Card>
   );
 };
