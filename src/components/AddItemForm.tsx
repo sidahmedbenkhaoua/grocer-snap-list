@@ -4,24 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Plus, Upload } from "lucide-react";
+import { getCategoryIcon, categories } from "@/utils/categoryUtils";
 import type { ShoppingItemType } from "./ShoppingItem";
 
 interface AddItemFormProps {
   onAdd: (item: Omit<ShoppingItemType, 'id'>) => void;
 }
-
-const categories = [
-  "Légumes",
-  "Fruits", 
-  "Pain",
-  "Viande",
-  "Produits laitiers",
-  "Épicerie",
-  "Boissons",
-  "Hygiène",
-  "Entretien",
-  "Autres"
-];
 
 const units = ["kg", "g", "L", "ml", "pièce(s)", "paquet(s)", "boîte(s)"];
 
@@ -119,11 +107,17 @@ export const AddItemForm = ({ onAdd }: AddItemFormProps) => {
             <SelectValue placeholder="Catégorie" />
           </SelectTrigger>
           <SelectContent>
-            {categories.map((cat) => (
-              <SelectItem key={cat} value={cat}>
-                {cat}
-              </SelectItem>
-            ))}
+            {categories.map((cat) => {
+              const CategoryIcon = getCategoryIcon(cat);
+              return (
+                <SelectItem key={cat} value={cat}>
+                  <div className="flex items-center gap-2">
+                    <CategoryIcon size={16} />
+                    <span>{cat}</span>
+                  </div>
+                </SelectItem>
+              );
+            })}
           </SelectContent>
         </Select>
 
