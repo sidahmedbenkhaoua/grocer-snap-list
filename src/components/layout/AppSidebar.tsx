@@ -1,4 +1,4 @@
-import { ShoppingCart, History, Settings, Home, User } from "lucide-react";
+import { ShoppingCart, History, Settings, Home, User, Users } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 
 import {
@@ -16,6 +16,7 @@ import {
 const items = [
   { title: "Ma Liste Actuelle", url: "/", icon: ShoppingCart },
   { title: "Anciennes Listes", url: "/history", icon: History },
+  { title: "Groupes", url: "/groups", icon: Users },
   { title: "Profil", url: "/profile", icon: User },
   { title: "Paramètres", url: "/settings", icon: Settings },
 ];

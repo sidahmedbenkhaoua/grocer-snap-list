@@ -84,8 +84,8 @@ All colors MUST be HSL.
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    --primary: 142 76% 45%;
+    --primary-foreground: 222.2 84% 4.9%;
 
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
@@ -93,15 +93,31 @@ All colors MUST be HSL.
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --accent: 35 95% 65%;
+    --accent-foreground: 222.2 84% 4.9%;
 
-    --destructive: 0 62.8% 30.6%;
+    --destructive: 0 62.8% 50%;
     --destructive-foreground: 210 40% 98%;
 
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    --ring: 142 76% 45%;
+
+    /* Custom tokens pour le mode sombre */
+    --fresh-green: 142 76% 45%;
+    --fresh-green-light: 142 60% 20%;
+    --orange-fruit: 35 95% 65%;
+    --orange-fruit-light: 35 80% 15%;
+    --completed: 120 30% 35%;
+    
+    /* Gradients pour le mode sombre */
+    --gradient-fresh: linear-gradient(135deg, hsl(142 76% 45%), hsl(35 95% 65%));
+    --gradient-card: linear-gradient(135deg, hsl(222.2 84% 4.9%), hsl(217.2 32.6% 17.5%));
+    --gradient-completed: linear-gradient(135deg, hsl(120 30% 35%), hsl(120 20% 25%));
+    
+    /* Shadows pour le mode sombre */
+    --shadow-card: 0 4px 20px -4px hsl(142 76% 45% / 0.2);
+    --shadow-floating: 0 8px 32px -8px hsl(142 76% 45% / 0.3);
     --sidebar-background: 240 5.9% 10%;
     --sidebar-foreground: 240 4.8% 95.9%;
     --sidebar-primary: 224.3 76.3% 48%;
