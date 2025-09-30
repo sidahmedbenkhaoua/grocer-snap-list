@@ -1,10 +1,14 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Plus, Upload } from "lucide-react";
+import { Plus, Upload, Check, ChevronsUpDown } from "lucide-react";
 import { getCategoryIcon, categories } from "@/utils/categoryUtils";
+import { getAllCommonItems, getItemsByCategory } from "@/utils/commonItems";
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { cn } from "@/lib/utils";
 import type { ShoppingItemType } from "./ShoppingItem";
 
 interface AddItemFormProps {
@@ -20,6 +24,15 @@ export const AddItemForm = ({ onAdd }: AddItemFormProps) => {
   const [unit, setUnit] = useState("pièce(s)");
   const [category, setCategory] = useState("");
   const [image, setImage] = useState<string>();
+  const [comboboxOpen, setComboboxOpen] = useState(false);
+
+  // Liste d'articles suggérés basée sur la catégorie sélectionnée
+  const suggestedItems = useMemo(() => {
+    if (category) {
+      return getItemsByCategory(category);
+    }
+    return getAllCommonItems();
+  }, [category]);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -71,12 +84,56 @@ export const AddItemForm = ({ onAdd }: AddItemFormProps) => {
     <Card className="p-4 bg-gradient-card shadow-card">
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
-          <Input
-            placeholder="Nom de l'article"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-          />
+          <Popover open={comboboxOpen} onOpenChange={setComboboxOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                role="combobox"
+                aria-expanded={comboboxOpen}
+                className="w-full justify-between"
+              >
+                {name || "Sélectionner ou saisir un article..."}
+                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-full p-0" align="start">
+              <Command>
+                <CommandInput 
+                  placeholder="Rechercher un article..." 
+                  value={name}
+                  onValueChange={setName}
+                />
+                <CommandList>
+                  <CommandEmpty>Aucun article trouvé. Appuyez sur Entrée pour ajouter "{name}".</CommandEmpty>
+                  <CommandGroup>
+                    {suggestedItems
+                      .filter((item) => 
+                        item.toLowerCase().includes(name.toLowerCase())
+                      )
+                      .slice(0, 10)
+                      .map((item) => (
+                        <CommandItem
+                          key={item}
+                          value={item}
+                          onSelect={(currentValue) => {
+                            setName(currentValue);
+                            setComboboxOpen(false);
+                          }}
+                        >
+                          <Check
+                            className={cn(
+                              "mr-2 h-4 w-4",
+                              name === item ? "opacity-100" : "opacity-0"
+                            )}
+                          />
+                          {item}
+                        </CommandItem>
+                      ))}
+                  </CommandGroup>
+                </CommandList>
+              </Command>
+            </PopoverContent>
+          </Popover>
         </div>
 
         <div className="grid grid-cols-2 gap-2">

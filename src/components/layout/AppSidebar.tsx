@@ -1,21 +1,23 @@
-import { ShoppingCart, History, Settings, Home, User, Users } from "lucide-react";
+import { ShoppingCart, History, Users, User, Settings } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
-
 import {
   Sidebar,
   SidebarContent,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { Separator } from "@/components/ui/separator";
 
-const items = [
-  { title: "Ma Liste Actuelle", url: "/", icon: ShoppingCart },
-  { title: "Anciennes Listes", url: "/history", icon: History },
+const mainItems = [
+  { title: "Ma Liste", url: "/", icon: ShoppingCart },
+  { title: "Historique", url: "/history", icon: History },
+];
+
+const secondaryItems = [
   { title: "Groupes", url: "/groups", icon: Users },
   { title: "Profil", url: "/profile", icon: User },
   { title: "Paramètres", url: "/settings", icon: Settings },
@@ -27,36 +29,77 @@ export function AppSidebar() {
   const currentPath = location.pathname;
 
   const isActive = (path: string) => currentPath === path;
-  const getNavCls = (isCurrentActive: boolean) =>
-    `transition-colors ${
-      isCurrentActive 
-        ? "bg-primary text-primary-foreground font-medium" 
-        : "hover:bg-accent hover:text-accent-foreground"
-    }`;
 
   return (
-    <Sidebar className="border-r">
-      <SidebarContent>
+    <Sidebar className="border-r bg-card">
+      <SidebarContent className="p-4">
+        {/* Logo */}
+        <div className="mb-8 px-2">
+          <h1 className="text-2xl font-bold bg-gradient-fresh bg-clip-text text-transparent">
+            {state !== "collapsed" ? "🛒 Mes Courses" : "🛒"}
+          </h1>
+        </div>
+
+        {/* Main Navigation */}
         <SidebarGroup>
-          <SidebarGroupLabel className="text-fresh-green font-semibold text-lg px-4 py-3">
-            📝 Mes Courses
-          </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu className="space-y-1">
-              {items.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <NavLink 
-                      to={item.url} 
-                      end 
-                      className={getNavCls(isActive(item.url))}
-                    >
-                      <item.icon className="h-4 w-4" />
-                      {state !== "collapsed" && <span>{item.title}</span>}
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+              {mainItems.map((item) => {
+                const active = isActive(item.url);
+                return (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton asChild>
+                      <NavLink 
+                        to={item.url} 
+                        end 
+                        className={`rounded-lg transition-all duration-200 ${
+                          active 
+                            ? "bg-primary text-primary-foreground shadow-sm" 
+                            : "hover:bg-accent/50"
+                        }`}
+                      >
+                        <item.icon className={`h-5 w-5 ${active ? "scale-110" : ""}`} />
+                        {state !== "collapsed" && (
+                          <span className="ml-3 font-medium">{item.title}</span>
+                        )}
+                      </NavLink>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <Separator className="my-6" />
+
+        {/* Secondary Navigation */}
+        <SidebarGroup>
+          <SidebarGroupContent>
+            <SidebarMenu className="space-y-1">
+              {secondaryItems.map((item) => {
+                const active = isActive(item.url);
+                return (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton asChild>
+                      <NavLink 
+                        to={item.url} 
+                        end 
+                        className={`rounded-lg transition-all duration-200 ${
+                          active 
+                            ? "bg-primary text-primary-foreground shadow-sm" 
+                            : "hover:bg-accent/50"
+                        }`}
+                      >
+                        <item.icon className={`h-5 w-5 ${active ? "scale-110" : ""}`} />
+                        {state !== "collapsed" && (
+                          <span className="ml-3 font-medium">{item.title}</span>
+                        )}
+                      </NavLink>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
