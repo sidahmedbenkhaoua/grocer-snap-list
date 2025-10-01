@@ -9,9 +9,11 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Users, Plus, Copy, UserPlus, Settings, ArrowLeft, Crown, Calendar } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
+import { useIsMobile } from "@/hooks/use-mobile";
 import type { Group, Member } from "@/types/group";
 
 export default function Groups() {
+  const isMobile = useIsMobile();
   const [currentGroup, setCurrentGroup] = useState<Group | null>(null);
   const [userGroups, setUserGroups] = useState<Group[]>([]);
   const [showCreateForm, setShowCreateForm] = useState(false);
@@ -167,55 +169,64 @@ export default function Groups() {
   };
 
   return (
-    <div className="container mx-auto p-6 max-w-4xl">
-      <div className="mb-6">
-        <h1 className="text-3xl font-bold text-foreground mb-2">Gestion des Groupes</h1>
-        <p className="text-muted-foreground">
+    <div className="container mx-auto p-4 md:p-6 max-w-4xl">
+      <div className="mb-4 md:mb-6">
+        <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2">Gestion des Groupes</h1>
+        <p className="text-sm md:text-base text-muted-foreground">
           Créez, rejoignez et gérez vos groupes pour partager vos listes de courses
         </p>
       </div>
 
-      <Tabs defaultValue="current" className="space-y-6">
+      <Tabs defaultValue="current" className="space-y-4 md:space-y-6">
         <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="current">Groupe Actuel</TabsTrigger>
-          <TabsTrigger value="all">Mes Groupes</TabsTrigger>
-          <TabsTrigger value="join">Rejoindre/Créer</TabsTrigger>
+          <TabsTrigger value="current" className="text-xs md:text-sm">
+            {isMobile ? "Actuel" : "Groupe Actuel"}
+          </TabsTrigger>
+          <TabsTrigger value="all" className="text-xs md:text-sm">
+            {isMobile ? "Groupes" : "Mes Groupes"}
+          </TabsTrigger>
+          <TabsTrigger value="join" className="text-xs md:text-sm">
+            {isMobile ? "Rejoindre" : "Rejoindre/Créer"}
+          </TabsTrigger>
         </TabsList>
 
         <TabsContent value="current" className="space-y-4">
           {currentGroup ? (
             <Card className="shadow-card">
-              <CardHeader className="pb-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-primary/10 rounded-lg">
-                      <Users className="h-6 w-6 text-primary" />
+              <CardHeader className="p-4 md:pb-4">
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-3">
+                  <div className="flex items-start gap-3">
+                    <div className="p-2 bg-primary/10 rounded-lg flex-shrink-0">
+                      <Users className="h-5 w-5 md:h-6 md:w-6 text-primary" />
                     </div>
-                    <div>
-                      <CardTitle className="flex items-center gap-2">
-                        {currentGroup.name}
+                    <div className="min-w-0 flex-1">
+                      <CardTitle className="flex flex-wrap items-center gap-2 text-base md:text-lg">
+                        <span className="truncate">{currentGroup.name}</span>
                         {currentGroup.createdBy === "creator" && (
-                          <Crown className="h-4 w-4 text-accent" />
+                          <Crown className="h-3 w-3 md:h-4 md:w-4 text-accent flex-shrink-0" />
                         )}
                       </CardTitle>
-                      <CardDescription>{currentGroup.description || "Aucune description"}</CardDescription>
+                      <CardDescription className="text-xs md:text-sm truncate">
+                        {currentGroup.description || "Aucune description"}
+                      </CardDescription>
                     </div>
                   </div>
                   <Button
                     variant="destructive"
                     size="sm"
                     onClick={() => leaveGroup(currentGroup.id)}
+                    className="w-full sm:w-auto"
                   >
                     Quitter
                   </Button>
                 </div>
               </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="flex items-center gap-4 p-4 bg-muted/50 rounded-lg">
+              <CardContent className="space-y-4 md:space-y-6 p-4">
+                <div className="flex flex-col md:flex-row md:items-center gap-4 p-3 md:p-4 bg-muted/50 rounded-lg">
                   <div className="flex-1">
-                    <Label className="text-sm font-medium">Code d'invitation</Label>
+                    <Label className="text-xs md:text-sm font-medium">Code d'invitation</Label>
                     <div className="flex items-center gap-2 mt-1">
-                      <Badge variant="outline" className="font-mono text-lg px-3 py-1">
+                      <Badge variant="outline" className="font-mono text-sm md:text-lg px-2 md:px-3 py-1">
                         {currentGroup.code}
                       </Badge>
                       <Button
@@ -223,41 +234,41 @@ export default function Groups() {
                         size="sm"
                         onClick={() => copyGroupCode(currentGroup.code)}
                       >
-                        <Copy className="h-4 w-4" />
+                        <Copy className="h-3 w-3 md:h-4 md:w-4" />
                       </Button>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <Label className="text-sm font-medium">Créé le</Label>
-                    <div className="flex items-center gap-1 mt-1 text-sm text-muted-foreground">
+                  <div className="md:text-right">
+                    <Label className="text-xs md:text-sm font-medium">Créé le</Label>
+                    <div className="flex items-center gap-1 mt-1 text-xs md:text-sm text-muted-foreground">
                       <Calendar className="h-3 w-3" />
-                      {formatDate(currentGroup.createdAt)}
+                      <span className="whitespace-nowrap">{formatDate(currentGroup.createdAt)}</span>
                     </div>
                   </div>
                 </div>
 
                 <div>
-                  <h3 className="font-semibold mb-3 flex items-center gap-2">
-                    <Users className="h-4 w-4" />
+                  <h3 className="text-sm md:text-base font-semibold mb-3 flex items-center gap-2">
+                    <Users className="h-3 w-3 md:h-4 md:w-4" />
                     Membres ({currentGroup.members.length})
                   </h3>
-                  <div className="grid gap-3 sm:grid-cols-2">
+                  <div className="grid gap-2 md:gap-3 sm:grid-cols-2">
                     {currentGroup.members.map((member) => (
-                      <div key={member.id} className="flex items-center gap-3 p-3 border rounded-lg">
-                        <Avatar className="h-8 w-8">
+                      <div key={member.id} className="flex items-center gap-2 md:gap-3 p-2 md:p-3 border rounded-lg">
+                        <Avatar className="h-7 w-7 md:h-8 md:w-8 flex-shrink-0">
                           <AvatarImage src={member.avatar} />
-                          <AvatarFallback className="text-sm">
+                          <AvatarFallback className="text-xs md:text-sm">
                             {member.name.split(' ').map(n => n[0]).join('').toUpperCase()}
                           </AvatarFallback>
                         </Avatar>
                         <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2">
-                            <span className="font-medium truncate">{member.name}</span>
+                          <div className="flex items-center gap-1 md:gap-2">
+                            <span className="text-xs md:text-sm font-medium truncate">{member.name}</span>
                             {member.id === currentGroup.createdBy && (
                               <Crown className="h-3 w-3 text-accent flex-shrink-0" />
                             )}
                           </div>
-                          <p className="text-sm text-muted-foreground truncate">{member.email}</p>
+                          <p className="text-xs text-muted-foreground truncate">{member.email}</p>
                         </div>
                       </div>
                     ))}
@@ -267,20 +278,20 @@ export default function Groups() {
             </Card>
           ) : (
             <Card className="shadow-card">
-              <CardContent className="flex flex-col items-center justify-center py-12">
-                <div className="p-4 bg-muted/50 rounded-full mb-4">
-                  <Users className="h-12 w-12 text-muted-foreground" />
+              <CardContent className="flex flex-col items-center justify-center py-8 md:py-12 p-4">
+                <div className="p-3 md:p-4 bg-muted/50 rounded-full mb-4">
+                  <Users className="h-8 w-8 md:h-12 md:w-12 text-muted-foreground" />
                 </div>
-                <h3 className="text-xl font-semibold mb-2">Aucun groupe actuel</h3>
-                <p className="text-muted-foreground text-center mb-6">
+                <h3 className="text-lg md:text-xl font-semibold mb-2 text-center">Aucun groupe actuel</h3>
+                <p className="text-sm md:text-base text-muted-foreground text-center mb-6 max-w-md">
                   Vous n'avez pas de groupe actif. Créez-en un nouveau ou rejoignez un groupe existant.
                 </p>
-                <div className="flex gap-2">
-                  <Button onClick={() => setShowCreateForm(true)}>
+                <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                  <Button onClick={() => setShowCreateForm(true)} className="w-full sm:w-auto" size={isMobile ? "sm" : "default"}>
                     <Plus className="h-4 w-4 mr-2" />
                     Créer un groupe
                   </Button>
-                  <Button variant="outline">
+                  <Button variant="outline" className="w-full sm:w-auto" size={isMobile ? "sm" : "default"}>
                     <UserPlus className="h-4 w-4 mr-2" />
                     Rejoindre un groupe
                   </Button>
@@ -292,37 +303,38 @@ export default function Groups() {
 
         <TabsContent value="all" className="space-y-4">
           {userGroups.length > 0 ? (
-            <div className="grid gap-4">
+            <div className="grid gap-3 md:gap-4">
               {userGroups.map((group) => (
                 <Card key={group.id} className="shadow-card">
-                  <CardContent className="p-4">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className="p-2 bg-primary/10 rounded-lg">
-                          <Users className="h-5 w-5 text-primary" />
+                  <CardContent className="p-3 md:p-4">
+                    <div className="flex flex-col lg:flex-row lg:items-center gap-3 md:gap-4">
+                      <div className="flex items-start gap-2 md:gap-3 flex-1 min-w-0">
+                        <div className="p-2 bg-primary/10 rounded-lg flex-shrink-0">
+                          <Users className="h-4 w-4 md:h-5 md:w-5 text-primary" />
                         </div>
-                        <div>
-                          <h4 className="font-semibold flex items-center gap-2">
-                            {group.name}
+                        <div className="min-w-0 flex-1">
+                          <h4 className="text-sm md:text-base font-semibold flex flex-wrap items-center gap-1 md:gap-2">
+                            <span className="truncate">{group.name}</span>
                             {group.id === currentGroup?.id && (
-                              <Badge variant="default" className="text-xs">Actuel</Badge>
+                              <Badge variant="default" className="text-xs flex-shrink-0">Actuel</Badge>
                             )}
                             {group.createdBy === "creator" && (
-                              <Crown className="h-3 w-3 text-accent" />
+                              <Crown className="h-3 w-3 text-accent flex-shrink-0" />
                             )}
                           </h4>
-                          <p className="text-sm text-muted-foreground">
+                          <p className="text-xs md:text-sm text-muted-foreground">
                             {group.members.length} membre{group.members.length > 1 ? 's' : ''} • 
                             Code: {group.code}
                           </p>
                         </div>
                       </div>
-                      <div className="flex gap-2">
+                      <div className="flex gap-2 flex-wrap lg:flex-nowrap">
                         {group.id !== currentGroup?.id && (
                           <Button
                             variant="outline"
                             size="sm"
                             onClick={() => switchToGroup(group)}
+                            className="flex-1 lg:flex-none text-xs md:text-sm"
                           >
                             Activer
                           </Button>
@@ -332,7 +344,7 @@ export default function Groups() {
                           size="sm"
                           onClick={() => copyGroupCode(group.code)}
                         >
-                          <Copy className="h-4 w-4" />
+                          <Copy className="h-3 w-3 md:h-4 md:w-4" />
                         </Button>
                         <Button
                           variant="ghost"
@@ -340,7 +352,8 @@ export default function Groups() {
                           onClick={() => leaveGroup(group.id)}
                           className="text-destructive hover:text-destructive"
                         >
-                          Quitter
+                          <span className="hidden sm:inline">Quitter</span>
+                          <span className="sm:hidden text-xs">Quitter</span>
                         </Button>
                       </div>
                     </div>
@@ -350,12 +363,12 @@ export default function Groups() {
             </div>
           ) : (
             <Card className="shadow-card">
-              <CardContent className="flex flex-col items-center justify-center py-12">
-                <div className="p-4 bg-muted/50 rounded-full mb-4">
-                  <Users className="h-12 w-12 text-muted-foreground" />
+              <CardContent className="flex flex-col items-center justify-center py-8 md:py-12 p-4">
+                <div className="p-3 md:p-4 bg-muted/50 rounded-full mb-4">
+                  <Users className="h-8 w-8 md:h-12 md:w-12 text-muted-foreground" />
                 </div>
-                <h3 className="text-xl font-semibold mb-2">Aucun groupe</h3>
-                <p className="text-muted-foreground text-center">
+                <h3 className="text-lg md:text-xl font-semibold mb-2">Aucun groupe</h3>
+                <p className="text-sm md:text-base text-muted-foreground text-center">
                   Vous n'êtes membre d'aucun groupe pour le moment.
                 </p>
               </CardContent>
@@ -363,39 +376,41 @@ export default function Groups() {
           )}
         </TabsContent>
 
-        <TabsContent value="join" className="space-y-6">
-          <div className="grid md:grid-cols-2 gap-6">
+        <TabsContent value="join" className="space-y-4 md:space-y-6">
+          <div className="grid gap-4 md:gap-6 lg:grid-cols-2">
             {/* Créer un groupe */}
             <Card className="shadow-card">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Plus className="h-5 w-5" />
+              <CardHeader className="p-4 md:p-6">
+                <CardTitle className="flex items-center gap-2 text-base md:text-lg">
+                  <Plus className="h-4 w-4 md:h-5 md:w-5" />
                   Créer un Groupe
                 </CardTitle>
-                <CardDescription>
+                <CardDescription className="text-xs md:text-sm">
                   Créez un nouveau groupe pour partager vos listes de courses
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-3 md:space-y-4 p-4 md:p-6 pt-0 md:pt-0">
                 <div className="space-y-2">
-                  <Label htmlFor="groupName">Nom du groupe *</Label>
+                  <Label htmlFor="groupName" className="text-xs md:text-sm">Nom du groupe *</Label>
                   <Input
                     id="groupName"
                     placeholder="ex: Colocation Dupont"
                     value={groupName}
                     onChange={(e) => setGroupName(e.target.value)}
+                    className="text-sm"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="groupDescription">Description</Label>
+                  <Label htmlFor="groupDescription" className="text-xs md:text-sm">Description</Label>
                   <Input
                     id="groupDescription"
                     placeholder="Description du groupe (optionnel)"
                     value={groupDescription}
                     onChange={(e) => setGroupDescription(e.target.value)}
+                    className="text-sm"
                   />
                 </div>
-                <Button onClick={createGroup} className="w-full">
+                <Button onClick={createGroup} className="w-full" size={isMobile ? "sm" : "default"}>
                   <Plus className="h-4 w-4 mr-2" />
                   Créer le Groupe
                 </Button>
@@ -404,47 +419,49 @@ export default function Groups() {
 
             {/* Rejoindre un groupe */}
             <Card className="shadow-card">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <UserPlus className="h-5 w-5" />
+              <CardHeader className="p-4 md:p-6">
+                <CardTitle className="flex items-center gap-2 text-base md:text-lg">
+                  <UserPlus className="h-4 w-4 md:h-5 md:w-5" />
                   Rejoindre un Groupe
                 </CardTitle>
-                <CardDescription>
+                <CardDescription className="text-xs md:text-sm">
                   Utilisez un code d'invitation pour rejoindre un groupe existant
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="space-y-3 md:space-y-4 p-4 md:p-6 pt-0 md:pt-0">
                 <div className="space-y-2">
-                  <Label htmlFor="joinCode">Code d'invitation *</Label>
+                  <Label htmlFor="joinCode" className="text-xs md:text-sm">Code d'invitation *</Label>
                   <Input
                     id="joinCode"
                     placeholder="Entrez le code (6 caractères)"
                     value={joinCode}
                     onChange={(e) => setJoinCode(e.target.value.toUpperCase())}
                     maxLength={6}
-                    className="font-mono text-center"
+                    className="font-mono text-center text-sm"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="memberName">Votre nom *</Label>
+                  <Label htmlFor="memberName" className="text-xs md:text-sm">Votre nom *</Label>
                   <Input
                     id="memberName"
                     placeholder="Votre nom d'affichage"
                     value={memberName}
                     onChange={(e) => setMemberName(e.target.value)}
+                    className="text-sm"
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="memberEmail">Email</Label>
+                  <Label htmlFor="memberEmail" className="text-xs md:text-sm">Email</Label>
                   <Input
                     id="memberEmail"
                     type="email"
                     placeholder="votre@email.com (optionnel)"
                     value={memberEmail}
                     onChange={(e) => setMemberEmail(e.target.value)}
+                    className="text-sm"
                   />
                 </div>
-                <Button onClick={joinGroup} className="w-full">
+                <Button onClick={joinGroup} className="w-full" size={isMobile ? "sm" : "default"}>
                   <UserPlus className="h-4 w-4 mr-2" />
                   Rejoindre le Groupe
                 </Button>
