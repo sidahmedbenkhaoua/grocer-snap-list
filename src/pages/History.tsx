@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Calendar, Search, Eye, Copy, Trash2, ShoppingCart } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
 import type { ShoppingItemType } from "@/components/ShoppingItem";
 
 interface SavedList {
@@ -60,6 +61,7 @@ const mockLists: SavedList[] = [
 export default function History() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedList, setSelectedList] = useState<SavedList | null>(null);
+  const isMobile = useIsMobile();
 
   const filteredLists = mockLists.filter(list =>
     list.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -93,27 +95,28 @@ export default function History() {
 
   if (selectedList) {
     return (
-      <div className="container max-w-2xl mx-auto p-6 space-y-6">
-        <div className="flex items-center gap-4">
+      <div className="container max-w-2xl mx-auto p-4 md:p-6 space-y-4 md:space-y-6">
+        <div className="space-y-3">
           <Button 
             variant="outline" 
             onClick={() => setSelectedList(null)}
+            size={isMobile ? "sm" : "default"}
           >
             ← Retour
           </Button>
           <div>
-            <h1 className="text-2xl font-bold">{selectedList.name}</h1>
-            <p className="text-muted-foreground">
+            <h1 className="text-xl md:text-2xl font-bold">{selectedList.name}</h1>
+            <p className="text-sm md:text-base text-muted-foreground">
               Créée le {formatDate(selectedList.createdAt)}
               {selectedList.completedAt && ` • Terminée le ${formatDate(selectedList.completedAt)}`}
             </p>
           </div>
         </div>
 
-        <Card className="p-6">
-          <div className="flex justify-between items-center mb-4">
-            <h2 className="text-lg font-semibold">Articles ({selectedList.totalItems})</h2>
-            <div className="flex gap-2">
+        <Card className="p-4 md:p-6">
+          <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-3 mb-4">
+            <h2 className="text-base md:text-lg font-semibold">Articles ({selectedList.totalItems})</h2>
+            <div className="flex gap-2 flex-wrap">
               {getStatusBadge(selectedList)}
               <Button 
                 size="sm" 
@@ -130,21 +133,21 @@ export default function History() {
             {selectedList.items.map((item) => (
               <div 
                 key={item.id}
-                className={`flex items-center justify-between p-3 rounded-lg border ${
+                className={`flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 p-3 rounded-lg border ${
                   item.completed ? 'bg-completed/20 opacity-75' : 'bg-background'
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <div className={`w-3 h-3 rounded-full ${
+                  <div className={`w-3 h-3 rounded-full flex-shrink-0 ${
                     item.completed ? 'bg-fresh-green' : 'bg-muted'
                   }`} />
-                  <span className={item.completed ? 'line-through text-muted-foreground' : ''}>
+                  <span className={`${item.completed ? 'line-through text-muted-foreground' : ''} text-sm md:text-base`}>
                     {item.name}
                   </span>
                 </div>
-                <div className="flex items-center gap-2">
-                  <Badge variant="outline">{item.category}</Badge>
-                  <span className="text-sm text-muted-foreground">
+                <div className="flex items-center gap-2 ml-6 sm:ml-0">
+                  <Badge variant="outline" className="text-xs">{item.category}</Badge>
+                  <span className="text-xs md:text-sm text-muted-foreground whitespace-nowrap">
                     {item.quantity} {item.unit}
                   </span>
                 </div>
@@ -157,10 +160,10 @@ export default function History() {
   }
 
   return (
-    <div className="container max-w-4xl mx-auto p-6 space-y-6">
+    <div className="container max-w-4xl mx-auto p-4 md:p-6 space-y-4 md:space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-foreground mb-2">Mes Anciennes Listes</h1>
-        <p className="text-muted-foreground">
+        <h1 className="text-2xl md:text-3xl font-bold text-foreground mb-2">Mes Anciennes Listes</h1>
+        <p className="text-sm md:text-base text-muted-foreground">
           Retrouvez et réutilisez vos listes de courses précédentes
         </p>
       </div>
@@ -177,23 +180,23 @@ export default function History() {
       </div>
 
       {/* Stats */}
-      <Card className="p-6 bg-gradient-card">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <Card className="p-4 md:p-6 bg-gradient-card">
+        <div className="grid grid-cols-3 gap-3 md:gap-6">
           <div className="text-center">
-            <div className="text-2xl font-bold text-fresh-green">{mockLists.length}</div>
-            <div className="text-sm text-muted-foreground">Listes sauvées</div>
+            <div className="text-xl md:text-2xl font-bold text-fresh-green">{mockLists.length}</div>
+            <div className="text-xs md:text-sm text-muted-foreground">Listes sauvées</div>
           </div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-orange-fruit">
+            <div className="text-xl md:text-2xl font-bold text-orange-fruit">
               {mockLists.reduce((acc, list) => acc + list.totalItems, 0)}
             </div>
-            <div className="text-sm text-muted-foreground">Articles au total</div>
+            <div className="text-xs md:text-sm text-muted-foreground">Articles au total</div>
           </div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-primary">
+            <div className="text-xl md:text-2xl font-bold text-primary">
               {mockLists.filter(list => list.completedItems === list.totalItems).length}
             </div>
-            <div className="text-sm text-muted-foreground">Listes complétées</div>
+            <div className="text-xs md:text-sm text-muted-foreground">Listes complétées</div>
           </div>
         </div>
       </Card>
@@ -211,39 +214,41 @@ export default function History() {
         ) : (
           filteredLists.map((list) => (
             <Card key={list.id} className="p-4 hover:shadow-card transition-shadow">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col lg:flex-row lg:items-center gap-4">
                 <div className="flex-1">
-                  <div className="flex items-center gap-3 mb-2">
-                    <h3 className="text-lg font-semibold">{list.name}</h3>
+                  <div className="flex flex-wrap items-center gap-2 md:gap-3 mb-2">
+                    <h3 className="text-base md:text-lg font-semibold">{list.name}</h3>
                     {getStatusBadge(list)}
                   </div>
-                  <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                  <div className="flex flex-wrap items-center gap-3 md:gap-4 text-xs md:text-sm text-muted-foreground">
                     <div className="flex items-center gap-1">
-                      <Calendar className="h-4 w-4" />
-                      {formatDate(list.createdAt)}
+                      <Calendar className="h-3 w-3 md:h-4 md:w-4" />
+                      <span className="whitespace-nowrap">{formatDate(list.createdAt)}</span>
                     </div>
                     <div className="flex items-center gap-1">
-                      <ShoppingCart className="h-4 w-4" />
+                      <ShoppingCart className="h-3 w-3 md:h-4 md:w-4" />
                       {list.totalItems} article{list.totalItems > 1 ? 's' : ''}
                     </div>
                   </div>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex gap-2 flex-wrap lg:flex-nowrap">
                   <Button 
                     variant="outline" 
                     size="sm"
                     onClick={() => setSelectedList(list)}
+                    className="flex-1 lg:flex-none"
                   >
                     <Eye className="h-4 w-4 mr-2" />
-                    Voir
+                    {isMobile ? "Voir" : "Voir"}
                   </Button>
                   <Button 
                     variant="outline" 
                     size="sm"
                     onClick={() => handleCopyToNewList(list)}
+                    className="flex-1 lg:flex-none"
                   >
                     <Copy className="h-4 w-4 mr-2" />
-                    Réutiliser
+                    {isMobile ? "Copier" : "Réutiliser"}
                   </Button>
                   <Button 
                     variant="outline" 
