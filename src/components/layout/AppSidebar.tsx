@@ -1,4 +1,4 @@
-import { ShoppingCart, History, Users, User, Settings } from "lucide-react";
+import { ShoppingCart, History, Users, User, Settings, Mail } from "lucide-react";
 import { NavLink, useLocation } from "react-router-dom";
 import {
   Sidebar,
@@ -19,6 +19,7 @@ const mainItems = [
 
 const secondaryItems = [
   { title: "Groupes", url: "/groups", icon: Users },
+  { title: "Invitations", url: "/invitations", icon: Mail },
   { title: "Profil", url: "/profile", icon: User },
   { title: "Paramètres", url: "/settings", icon: Settings },
 ];
