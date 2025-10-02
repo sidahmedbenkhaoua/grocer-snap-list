@@ -36,10 +36,11 @@ interface ShoppingItemProps {
   item: ShoppingItemType;
   onUpdate: (item: ShoppingItemType) => void;
   onDelete: (id: string) => void;
+  groupMembers?: Array<{ id: string; name: string; email: string; avatar?: string }>;
 }
 
 
-export const ShoppingItem = ({ item, onUpdate, onDelete }: ShoppingItemProps) => {
+export const ShoppingItem = ({ item, onUpdate, onDelete, groupMembers = [] }: ShoppingItemProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editName, setEditName] = useState(item.name);
   const [showPhotos, setShowPhotos] = useState(false);
@@ -285,6 +286,34 @@ export const ShoppingItem = ({ item, onUpdate, onDelete }: ShoppingItemProps) =>
               </div>
             );
           })()}
+        </div>
+      )}
+      
+      {groupMembers.length > 0 && (
+        <div className="mt-3 pt-3 border-t border-border/50">
+          <div className="flex items-center justify-between">
+            <span className="text-xs text-muted-foreground">Participants</span>
+            <div className="flex items-center -space-x-2">
+              {groupMembers.slice(0, 3).map((member) => (
+                <Avatar key={member.id} className="h-6 w-6 border-2 border-background">
+                  {member.avatar ? (
+                    <AvatarImage src={member.avatar} alt={member.name} />
+                  ) : (
+                    <AvatarFallback className="text-xs bg-primary text-primary-foreground">
+                      {member.name.split(' ').map(n => n[0]).join('').toUpperCase()}
+                    </AvatarFallback>
+                  )}
+                </Avatar>
+              ))}
+              {groupMembers.length > 3 && (
+                <div className="h-6 w-6 rounded-full bg-muted border-2 border-background flex items-center justify-center">
+                  <span className="text-xs font-medium text-muted-foreground">
+                    +{groupMembers.length - 3}
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
       )}
     </Card>

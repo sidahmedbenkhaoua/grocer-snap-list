@@ -169,6 +169,7 @@ const Index = () => {
                 item={item}
                 onUpdate={updateItem}
                 onDelete={deleteItem}
+                groupMembers={currentGroup?.members}
               />
             ))
           )}
