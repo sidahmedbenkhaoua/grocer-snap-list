@@ -15,7 +15,110 @@ export default function Invitations() {
 
   useEffect(() => {
     // Charger les invitations depuis le localStorage
-    const savedInvitations = JSON.parse(localStorage.getItem('invitations') || '[]');
+    let savedInvitations = JSON.parse(localStorage.getItem('invitations') || '[]');
+    
+    // Si aucune invitation, créer des invitations de test
+    if (savedInvitations.length === 0) {
+      const testInvitations: Invitation[] = [
+        {
+          id: '1',
+          groupId: 'test-group-1',
+          groupName: 'Colocation Paris Centre',
+          groupDescription: 'Groupe pour gérer les courses de la colocation',
+          invitedBy: 'user-123',
+          invitedByName: 'Marie Dupont',
+          invitedAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), // Il y a 2 heures
+          status: 'pending'
+        },
+        {
+          id: '2',
+          groupId: 'test-group-2',
+          groupName: 'Famille Martin',
+          groupDescription: 'Liste de courses familiale',
+          invitedBy: 'user-456',
+          invitedByName: 'Pierre Martin',
+          invitedAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(), // Il y a 1 jour
+          status: 'pending'
+        },
+        {
+          id: '3',
+          groupId: 'test-group-3',
+          groupName: 'Bureau Startup',
+          groupDescription: 'Courses pour le bureau',
+          invitedBy: 'user-789',
+          invitedByName: 'Sophie Bernard',
+          invitedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(), // Il y a 3 jours
+          status: 'pending'
+        }
+      ];
+      
+      // Créer aussi les groupes correspondants
+      const testGroups: Group[] = [
+        {
+          id: 'test-group-1',
+          name: 'Colocation Paris Centre',
+          description: 'Groupe pour gérer les courses de la colocation',
+          code: 'ABC123',
+          createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+          members: [
+            {
+              id: 'user-123',
+              name: 'Marie Dupont',
+              email: 'marie@example.com',
+              joinedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString()
+            }
+          ],
+          createdBy: 'user-123'
+        },
+        {
+          id: 'test-group-2',
+          name: 'Famille Martin',
+          description: 'Liste de courses familiale',
+          code: 'FAM456',
+          createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+          members: [
+            {
+              id: 'user-456',
+              name: 'Pierre Martin',
+              email: 'pierre@example.com',
+              joinedAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()
+            }
+          ],
+          createdBy: 'user-456'
+        },
+        {
+          id: 'test-group-3',
+          name: 'Bureau Startup',
+          description: 'Courses pour le bureau',
+          code: 'BUR789',
+          createdAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
+          members: [
+            {
+              id: 'user-789',
+              name: 'Sophie Bernard',
+              email: 'sophie@example.com',
+              joinedAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString()
+            }
+          ],
+          createdBy: 'user-789'
+        }
+      ];
+      
+      localStorage.setItem('invitations', JSON.stringify(testInvitations));
+      
+      // Ajouter les groupes de test s'ils n'existent pas déjà
+      const existingGroups = JSON.parse(localStorage.getItem('groups') || '[]');
+      const mergedGroups = [...existingGroups];
+      testGroups.forEach(testGroup => {
+        if (!mergedGroups.find(g => g.id === testGroup.id)) {
+          mergedGroups.push(testGroup);
+        }
+      });
+      localStorage.setItem('groups', JSON.stringify(mergedGroups));
+      
+      savedInvitations = testInvitations;
+    }
+    
     setInvitations(savedInvitations);
   }, []);
 
