@@ -1,4 +1,4 @@
-import { Bell, User, Sun, Moon, Search, Settings, Menu, LogOut } from "lucide-react";
+import { Bell, User, Sun, Moon, Search, Settings, Menu } from "lucide-react";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -17,7 +17,6 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useTheme } from "next-themes";
-import { useAuth } from "@/contexts/AuthContext";
 
 // Mock user data
 const mockUser = {
@@ -35,15 +34,10 @@ const mockNotifications = [
 
 export function AppHeader() {
   const { theme, setTheme } = useTheme();
-  const { user, signOut } = useAuth();
   const unreadCount = mockNotifications.filter(n => n.unread).length;
-  
-  const displayName = user?.user_metadata?.name || user?.email?.split('@')[0] || 'Utilisateur';
-  const userEmail = user?.email || '';
-  const userInitials = displayName.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2);
 
-  const handleLogout = async () => {
-    await signOut();
+  const handleLogout = () => {
+    console.log("Déconnexion...");
   };
 
   return (
@@ -130,8 +124,9 @@ export function AppHeader() {
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="relative p-1 rounded-xl hover:bg-accent transition-all duration-200">
                 <Avatar className="h-8 w-8 ring-2 ring-border hover:ring-primary/50 transition-all duration-200">
+                  <AvatarImage src={mockUser.avatar} alt={mockUser.name} />
                   <AvatarFallback className="bg-gradient-to-br from-fresh-green to-orange-fruit text-white font-semibold">
-                    {userInitials}
+                    {mockUser.name.split(' ').map(n => n[0]).join('')}
                   </AvatarFallback>
                 </Avatar>
               </Button>
@@ -140,14 +135,15 @@ export function AppHeader() {
               <DropdownMenuLabel className="p-4 font-normal">
                 <div className="flex items-center gap-3">
                   <Avatar className="h-12 w-12 ring-2 ring-border">
+                    <AvatarImage src={mockUser.avatar} alt={mockUser.name} />
                     <AvatarFallback className="bg-gradient-to-br from-fresh-green to-orange-fruit text-white font-semibold">
-                      {userInitials}
+                      {mockUser.name.split(' ').map(n => n[0]).join('')}
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex flex-col">
-                    <p className="text-sm font-semibold leading-none text-popover-foreground">{displayName}</p>
+                    <p className="text-sm font-semibold leading-none text-popover-foreground">{mockUser.name}</p>
                     <p className="text-xs text-muted-foreground mt-1">
-                      {userEmail}
+                      {mockUser.email}
                     </p>
                   </div>
                 </div>
@@ -170,7 +166,6 @@ export function AppHeader() {
                 onClick={handleLogout} 
                 className="p-3 rounded-xl text-destructive hover:bg-destructive/10 transition-colors font-medium"
               >
-                <LogOut className="mr-3 h-4 w-4" />
                 <span>Se déconnecter</span>
               </DropdownMenuItem>
             </DropdownMenuContent>
