@@ -54,6 +54,44 @@ const Index = () => {
 
     if (savedGroup) {
       setCurrentGroup(JSON.parse(savedGroup));
+    } else {
+      // Créer un groupe de démonstration
+      const demoGroup: Group = {
+        id: "demo-group",
+        name: "Famille Dupont",
+        description: "Liste de courses familiale",
+        code: "DEMO01",
+        createdAt: new Date().toISOString(),
+        members: [
+          {
+            id: "member-1",
+            name: "Vous",
+            email: "vous@example.com",
+            joinedAt: new Date().toISOString()
+          },
+          {
+            id: "member-2",
+            name: "Sophie Martin",
+            email: "sophie.martin@example.com",
+            joinedAt: new Date().toISOString()
+          },
+          {
+            id: "member-3",
+            name: "Lucas Dubois",
+            email: "lucas.dubois@example.com",
+            joinedAt: new Date().toISOString()
+          },
+          {
+            id: "member-4",
+            name: "Marie Lefebvre",
+            email: "marie.lefebvre@example.com",
+            joinedAt: new Date().toISOString()
+          }
+        ],
+        createdBy: "member-1"
+      };
+      setCurrentGroup(demoGroup);
+      localStorage.setItem('currentGroup', JSON.stringify(demoGroup));
     }
   }, []);
 
