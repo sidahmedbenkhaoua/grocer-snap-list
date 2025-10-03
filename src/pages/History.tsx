@@ -3,9 +3,11 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Calendar, Search, Eye, Copy, Trash2, ShoppingCart } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import type { ShoppingItemType } from "@/components/ShoppingItem";
+import type { Member } from "@/types/group";
 
 interface SavedList {
   id: string;
@@ -15,6 +17,7 @@ interface SavedList {
   items: ShoppingItemType[];
   totalItems: number;
   completedItems: number;
+  participants?: Member[];
 }
 
 // Mock data pour les anciennes listes
@@ -31,6 +34,26 @@ const mockLists: SavedList[] = [
     ],
     totalItems: 3,
     completedItems: 3,
+    participants: [
+      {
+        id: "member-1",
+        name: "Sophie Martin",
+        email: "sophie.martin@example.com",
+        joinedAt: new Date().toISOString()
+      },
+      {
+        id: "member-2",
+        name: "Lucas Dubois",
+        email: "lucas.dubois@example.com",
+        joinedAt: new Date().toISOString()
+      },
+      {
+        id: "member-3",
+        name: "Marie Lefebvre",
+        email: "marie.lefebvre@example.com",
+        joinedAt: new Date().toISOString()
+      }
+    ]
   },
   {
     id: "2", 
@@ -44,6 +67,20 @@ const mockLists: SavedList[] = [
     ],
     totalItems: 3,
     completedItems: 2,
+    participants: [
+      {
+        id: "member-1",
+        name: "Vous",
+        email: "vous@example.com",
+        joinedAt: new Date().toISOString()
+      },
+      {
+        id: "member-2",
+        name: "Sophie Martin",
+        email: "sophie.martin@example.com",
+        joinedAt: new Date().toISOString()
+      }
+    ]
   },
   {
     id: "3",
@@ -55,6 +92,32 @@ const mockLists: SavedList[] = [
     ],
     totalItems: 2,
     completedItems: 2,
+    participants: [
+      {
+        id: "member-1",
+        name: "Lucas Dubois",
+        email: "lucas.dubois@example.com",
+        joinedAt: new Date().toISOString()
+      },
+      {
+        id: "member-2",
+        name: "Marie Lefebvre",
+        email: "marie.lefebvre@example.com",
+        joinedAt: new Date().toISOString()
+      },
+      {
+        id: "member-3",
+        name: "Thomas Bernard",
+        email: "thomas.bernard@example.com",
+        joinedAt: new Date().toISOString()
+      },
+      {
+        id: "member-4",
+        name: "Julie Petit",
+        email: "julie.petit@example.com",
+        joinedAt: new Date().toISOString()
+      }
+    ]
   },
 ];
 
@@ -229,6 +292,31 @@ export default function History() {
                       <ShoppingCart className="h-3 w-3 md:h-4 md:w-4" />
                       {list.totalItems} article{list.totalItems > 1 ? 's' : ''}
                     </div>
+                    {list.participants && list.participants.length > 0 && (
+                      <div className="flex items-center gap-2">
+                        <span className="text-muted-foreground">Participants:</span>
+                        <div className="flex items-center -space-x-2">
+                          {list.participants.slice(0, 3).map((participant) => (
+                            <Avatar key={participant.id} className="h-6 w-6 border-2 border-background">
+                              {participant.avatar ? (
+                                <AvatarImage src={participant.avatar} alt={participant.name} />
+                              ) : (
+                                <AvatarFallback className="text-xs bg-primary text-primary-foreground">
+                                  {participant.name.split(' ').map(n => n[0]).join('').toUpperCase()}
+                                </AvatarFallback>
+                              )}
+                            </Avatar>
+                          ))}
+                          {list.participants.length > 3 && (
+                            <div className="h-6 w-6 rounded-full bg-muted border-2 border-background flex items-center justify-center">
+                              <span className="text-xs font-medium text-muted-foreground">
+                                +{list.participants.length - 3}
+                              </span>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
                 <div className="flex gap-2 flex-wrap lg:flex-nowrap">
