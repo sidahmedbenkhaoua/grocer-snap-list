@@ -17,13 +17,8 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { useTheme } from "next-themes";
-
-// Mock user data
-const mockUser = {
-  name: "Marie Dubois",
-  email: "marie.dubois@email.com",
-  avatar: "https://images.unsplash.com/photo-1494790108755-2616b612b560?w=150&h=150&fit=crop&crop=face"
-};
+import { useNavigate } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
 
 // Mock notifications
 const mockNotifications = [
@@ -34,10 +29,19 @@ const mockNotifications = [
 
 export function AppHeader() {
   const { theme, setTheme } = useTheme();
+  const navigate = useNavigate();
+  const { toast } = useToast();
   const unreadCount = mockNotifications.filter(n => n.unread).length;
+  
+  const currentUser = JSON.parse(localStorage.getItem("currentUser") || '{"name":"User","email":"user@email.com","avatar":""}');
 
   const handleLogout = () => {
-    console.log("Déconnexion...");
+    localStorage.removeItem("currentUser");
+    toast({
+      title: "Déconnexion réussie",
+      description: "À bientôt!",
+    });
+    navigate("/auth");
   };
 
   return (
@@ -124,9 +128,9 @@ export function AppHeader() {
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="relative p-1 rounded-xl hover:bg-accent transition-all duration-200">
                 <Avatar className="h-8 w-8 ring-2 ring-border hover:ring-primary/50 transition-all duration-200">
-                  <AvatarImage src={mockUser.avatar} alt={mockUser.name} />
+                  <AvatarImage src={currentUser.avatar} alt={currentUser.name} />
                   <AvatarFallback className="bg-gradient-to-br from-fresh-green to-orange-fruit text-white font-semibold">
-                    {mockUser.name.split(' ').map(n => n[0]).join('')}
+                    {currentUser.name.split(' ').map((n: string) => n[0]).join('')}
                   </AvatarFallback>
                 </Avatar>
               </Button>
@@ -135,15 +139,15 @@ export function AppHeader() {
               <DropdownMenuLabel className="p-4 font-normal">
                 <div className="flex items-center gap-3">
                   <Avatar className="h-12 w-12 ring-2 ring-border">
-                    <AvatarImage src={mockUser.avatar} alt={mockUser.name} />
+                    <AvatarImage src={currentUser.avatar} alt={currentUser.name} />
                     <AvatarFallback className="bg-gradient-to-br from-fresh-green to-orange-fruit text-white font-semibold">
-                      {mockUser.name.split(' ').map(n => n[0]).join('')}
+                      {currentUser.name.split(' ').map((n: string) => n[0]).join('')}
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex flex-col">
-                    <p className="text-sm font-semibold leading-none text-popover-foreground">{mockUser.name}</p>
+                    <p className="text-sm font-semibold leading-none text-popover-foreground">{currentUser.name}</p>
                     <p className="text-xs text-muted-foreground mt-1">
-                      {mockUser.email}
+                      {currentUser.email}
                     </p>
                   </div>
                 </div>
