@@ -178,7 +178,7 @@ export const GroupManagement = ({ currentGroup, onGroupChange }: GroupManagement
               Membres ({currentGroup.members.length})
             </div>
             <div className="flex flex-wrap gap-2">
-              {currentGroup.members.map((member) => (
+              {currentGroup.members.slice(0, 3).map((member) => (
                 <div key={member.id} className="flex items-center gap-2 bg-secondary/50 rounded-lg p-2">
                   <Avatar className="h-6 w-6">
                     <AvatarImage src={member.avatar} />
@@ -189,6 +189,13 @@ export const GroupManagement = ({ currentGroup, onGroupChange }: GroupManagement
                   <span className="text-sm">{member.name}</span>
                 </div>
               ))}
+              {currentGroup.members.length > 3 && (
+                <div className="flex items-center gap-2 bg-primary/10 rounded-lg p-2">
+                  <Badge variant="secondary" className="text-xs">
+                    +{currentGroup.members.length - 3} autres
+                  </Badge>
+                </div>
+              )}
             </div>
           </div>
         </div>
